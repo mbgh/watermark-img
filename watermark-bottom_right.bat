@@ -30,7 +30,10 @@ set OUT=%SRCBASE%%POSTFIX%%SRCEXT%
 :: Step through all files dropped on the batch file.
 ::FOR %%a IN (%SRCS%) DO ^
 echo %SRC%
-FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]\nWMOFF=%%[fx:%WMOFFSET%*w/100]" %SRC%`) DO set %%L
+FOR /F "usebackq" %%L IN (`%IM%identify -format
+"WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]\nWMOFF=%%[fx:%WMOFFSET%*w/100]"
+%SRC%`) DO set %%L
+echo Image/Watermark Information (in pixels):
 echo Image Width:      %WW%
 echo Image Height:     %HH%
 echo Watermark Width:  %WMWW%
