@@ -22,7 +22,7 @@
 set WM=watermark-full.svg
 
 :: Width of the watermark in percent of the source image width.
-set WMWIDTH=30
+set WMWIDTH=33
 
 :: Opacity of the watermark.
 set WMOP=10
@@ -44,7 +44,8 @@ FOR %%i IN ("%SRC%") DO set SRCEXT=%%~xi
 :: Concatenate the name of the watermarked output file.
 set OUT=%SRCBASE%%POSTFIX%%SRCEXT%
 
-:: Get the resolution of the source image and compute the size of the watermark.
+:: Get the resolution of the source image and compute the size of the
+:: watermark. 
 FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]" %SRC%`) DO set %%L
 echo Image/Watermark Information (in pixels):
 echo Image Width:     %WW%

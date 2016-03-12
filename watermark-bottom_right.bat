@@ -1,23 +1,27 @@
 :: ABOUT:
 :: This batch script is intended to create a watermark on the bottom right
-:: corner of an image. It can be useful to create a copyright watermark in an
-:: image before publishing it on, for instance, the Internet. Independently of
-:: the size of the image you want to process, the resulting watermark will
-:: always be inserted using a size proportionally to the input image size (i.e.,
-:: the ratio between the size of the watermark and the image will remain
-:: constant). 
+:: corner of a given source image using ImageMagick. It can be useful to create
+:: a copyright watermark in an image before publishing it, for instance, on the
+:: Internet. Several parameters of the watermark can be adjusted, such as the
+:: size and the offset from the bottom-right corner. The size of the watermark
+:: is always specified using relative values (i.e., it keeps the ratio between
+:: source images given in different resolutions and the inserted watermark).
 
 :: REQUIREMENTS:
 :: - You need to have ImageMagick installed on your windows system.
 :: - A vector image representing your watermark.
 
 :: USAGE:
-:: - Take a look at the variables below, which can be used to adjust the size as
-::   well as the position of the watermark.
-:: - Simply drop an image (e.g., a *.jpg) on the batch file.
+:: - Create a watermark to be inserted (in vector format).
+:: - Take a look at the variables below, which can be used to adjust several
+::   properties of the watermark.
+:: - Simply drop an image (e.g., a *.jpg) on the batch script.
 
 :: Disable echoing commands.
 @echo off
+
+:: Path to the watermark image to be overlayed (in vector format).
+set WM=watermark-bottom_right.svg
 
 :: Width of the watermark in percent of the original image width.
 set WMWIDTH=15
@@ -43,13 +47,16 @@ FOR %%i IN ("%SRC%") DO set SRCEXT=%%~xi
 :: Concatenate the name of the watermarked output file.
 set OUT=%SRCBASE%%POSTFIX%%SRCEXT%
 
-:: Step through all files dropped on the batch file.
-FOR /F "usebackq" %%L IN (`%IM%identify -format
-"WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]\nWMOFF=%%[fx:%WMOFFSET%*w/100]"
-%SRC%`) DO set %%L
+:: Get the resolution of the source image and compute the size of the
+:: watermark. 
+FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]\nWMOFF=%%[fx:%WMOFFSET%*w/100]" %SRC%`) DO set %%L
 echo Image/Watermark Information (in pixels):
 echo Image Width:      %WW%
 echo Image Height:     %HH%
 echo Watermark Width:  %WMWW%
 echo Watermark Offset: %WMOFF%
-composite -compose atop -geometry %WMWW%x+%WMOFF% -gravity southeast -background none ./watermark-bottom_right.svg %SRC% %OUT%
+
+:: Overlay the watermark on the bottom right corner of the source image using
+:: the given size of the watermark and its offset from the right edge of the
+:: source image.
+composite -compose atop -geometry %WMWW%x+%WMOFF% -gravity southeast -background none %WM% %SRC% %OUT%
