@@ -2,7 +2,7 @@
 
 From time to time I want to add some copyright information into an image by
 tagging it using a watermark under Windows operating systems. Therefore, I
-decided to create some small batch scripts, which allow me do simpy drop the
+decided to create some small batch scripts, which allow me to simply drop the
 images on the scripts and output a watermarked version of it. For the watermark
 placed in the bottom right corner I got inspired by
 [this article](http://www.xoogu.com/2013/how-to-automatically-watermark-or-batch-watermark-photos-using-imagemagick/).
@@ -16,7 +16,7 @@ placed in the bottom right corner I got inspired by
 * [ImageMagick](https://www.imagemagick.org) needs to be installed on your
   Windows operating system. Refer to
   [this website](http://imagemagick.sourceforge.net/http/www/windows.html) to
-  download the ImageMagick installer and follow the instructions there.
+  download the installer and follow the instructions there.
 
 * You need to have a watermark, which you want to be inserted into the input
   image (best in vector format such that it can be scaled arbitrarily).
