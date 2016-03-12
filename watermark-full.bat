@@ -13,7 +13,7 @@
 :: - Create a watermark to be inserted (in vector format).
 :: - Take a look at the variables below, which can be used to adjust several
 ::   properties of the watermark.
-:: - Simply drop an image (e.g., a *.jpg) on the batch file.
+:: - Simply drop an image (e.g., a *.jpg) on the batch script.
 
 :: Disable echoing commands.
 @echo off
