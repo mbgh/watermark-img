@@ -3,13 +3,13 @@
 From time to time I want to add some copyright information into an image by
 tagging it using a watermark under Windows operating systems. Therefore, I
 decided to create some small batch scripts, which allow me to simply drop the
-images on the scripts and output a watermarked version of it. For the watermark
-placed in the bottom right corner I got inspired by
+images on the scripts and output a watermarked version of them. For the
+watermark placed in the bottom right corner I got inspired by
 [this article](http://www.xoogu.com/2013/how-to-automatically-watermark-or-batch-watermark-photos-using-imagemagick/).
 
 # Examples
 
-![Bottom-right watermarked image](sample-watermark-bottom_right.jpg)
+![Bottom-right watermarked image](examples/watermark_before_after-bottom_right_example.jpg)
 
 # Requirements
 
