@@ -9,7 +9,12 @@ watermark placed in the bottom right corner I got inspired by
 
 # Examples
 
+Bottom-Right Watermarked Image
 ![Bottom-right watermarked image](examples/watermark_before_after-bottom_right_example.jpg)
+
+Fully Watermarked Image
+![Bottom-right watermarked image](examples/watermark_before_after-full_example.jpg)
+
 
 # Requirements
 
