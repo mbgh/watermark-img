@@ -3,7 +3,8 @@
 :: image using ImageMagick. Several parameters of the watermark can be adjusted,
 :: such as size and opacity. The size of the watermark is always specified using 
 :: relative values (i.e., it keeps the ratio between source images given in
-:: different resolutions and the inserted watermark).
+:: different resolutions and the inserted watermark). The watermarked output
+:: image will be put into the same directory as the input (source) image.
 
 :: REQUIREMENTS:
 :: - You need to have ImageMagick installed on your Windows system.
@@ -32,28 +33,36 @@ set POSTFIX=_wm
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:: Apply watermark to the image being dropped on the batch file.
-set SRC=%1
+:: Get the directory of the source image (including the directory).
+set SRCDIR=%~dp1
 
-:: Get the base name of the image.
-FOR /F %%i IN ("%SRC%") DO set SRCBASE=%%~ni
+:: Get the base name (file name) of the image.
+set SRCBASE=%~n1
 
 :: Get the extension of the image.
-FOR %%i IN ("%SRC%") DO set SRCEXT=%%~xi
+set SRCEXT=%~x1
 
-:: Concatenate the name of the watermarked output file.
-set OUT=%SRCBASE%%POSTFIX%%SRCEXT%
+:: Determine complete path to the source image.
+set SRC=%SRCDIR%%SRCBASE%%SRCEXT%
+
+:: Determine complete path to the output image.
+set OUT=%SRCDIR%%SRCBASE%%POSTFIX%%SRCEXT%
 
 :: Get the resolution of the source image and compute the size of the
 :: watermark. 
-FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]" %SRC%`) DO set %%L
-echo Image/Watermark Information (in pixels):
-echo Image Width:     %WW%
-echo Image Height:    %HH%
-echo Watermark Width: %WMWW%
+FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]" "%SRC%"`) DO set %%L
+
+:: Print some information.
+echo "Input Image:  %SRC%"
+echo "Output Image: %OUT%"
+
+echo "Image/Watermark Information (in pixels):"
+echo "Image Width:     %WW%"
+echo "Image Height:    %HH%"
+echo "Watermark Width: %WMWW%"
 
 :: First, convert the watermark (provided in vector format) into a raster image
 :: and then pipe the resulting raster image to the 'composite' command in order
 :: to actually overlay the watermark everywhere on the image.
 convert -resize %WMWW%x%WMWW% -background none %WM% miff:- |^
-composite -dissolve %WMOP% -tile - %SRC% %OUT%
+composite -dissolve %WMOP% -tile - "%SRC%" "%OUT%"
