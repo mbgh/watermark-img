@@ -1,7 +1,7 @@
 :: ABOUT:
 :: This batch script is intended to create a watermark all over a given source
 :: image using ImageMagick. Several parameters of the watermark can be adjusted,
-:: such as size and opacity. The size of the watermark is always specified using 
+:: such as size and opacity. The size of the watermark is always specified using
 :: relative values (i.e., it keeps the ratio between source images given in
 :: different resolutions and the inserted watermark). The watermarked output
 :: image will be put into the same directory as the input (source) image.
@@ -48,9 +48,31 @@ set SRC=%SRCDIR%%SRCBASE%%SRCEXT%
 :: Determine complete path to the output image.
 set OUT=%SRCDIR%%SRCBASE%%POSTFIX%%SRCEXT%
 
-:: Get the resolution of the source image and compute the size of the
-:: watermark. 
-FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]" "%SRC%"`) DO set %%L
+:: Get the resolution of the source image.
+FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h" "%SRC%"`) DO set %%L
+
+:: Compute the width of the watermark using the larger dimension of the source
+:: image (i.e., use the width if it was a landscape image and the height if it
+:: was a portrait image).
+IF %WW% GTR %HH% (
+   :: If the width is larger than the height, use the width as a basis.
+   set /a WMWW=%WMWIDTH%*%WW%/100
+)
+
+IF %HH% GTR %WW% (
+   :: If the height is larger than the width, use the height as a basis.
+   set /a WMWW=%WMWIDTH%*%HH%/100
+)
+
+IF %WW% == %HH% (
+   :: If width and height are equal, use the width as a basis.
+   set /a WMWW=%WMWIDTH%*%WW%/100
+)
+
+:: Compute the width of the watermark using the larger dimension of the source
+:: image (i.e., use the width if it was a landscape image and the height if it
+:: was a portrait image).
+set /a WMOFF=%WMOFFSET%*%WW%/100
 
 :: Print some information.
 echo "Input Image:  %SRC%"
