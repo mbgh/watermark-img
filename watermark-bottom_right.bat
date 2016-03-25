@@ -75,9 +75,9 @@ IF %WW% == %HH% (
    set /a WMWW=%WMWIDTH%*%WW%/100
 )
 
-:: Compute the offset from the bottom right. Note that for computing the offset,
-:: always the width of the original image is used (and not the larger one of the
-:: original image edges).
+:: Compute the width of the watermark using the larger dimension of the source
+:: image (i.e., use the width if it was a landscape image and the height if it
+:: was a portrait image).
 set /a WMOFF=%WMOFFSET%*%WW%/100
 
 :: Print some information.
