@@ -25,7 +25,9 @@
 :: Path to the watermark image to be overlayed (in vector format).
 set WM=watermark-bottom_right.svg
 
-:: Width of the watermark in percent of the original image width.
+:: Width of the watermark in percent of either the original image width or the
+:: original image height (depending on which of them is larger, i.e., for
+:: landscape images the width and for portrait images the height is used).
 set WMWIDTH=15
 
 :: Determine the offset of the watermark from the right in percent of the
@@ -52,9 +54,31 @@ set SRC=%SRCDIR%%SRCBASE%%SRCEXT%
 :: Determine complete path to the output image.
 set OUT=%SRCDIR%%SRCBASE%%POSTFIX%%SRCEXT%
 
-:: Get the resolution of the source image and compute the size of the
-:: watermark. 
-FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h\nWMWW=%%[fx:%WMWIDTH%*w/100]\nWMOFF=%%[fx:%WMOFFSET%*w/100]" "%SRC%"`) DO set %%L
+:: Get the resolution of the source image.
+FOR /F "usebackq" %%L IN (`%IM%identify -format "WW=%%w\nHH=%%h" "%SRC%"`) DO set %%L
+
+:: Compute the width of the watermark using larger dimension of the source image
+:: (i.e., use the width if it was a landscape image and the height if it was a
+:: portrait image).
+IF %WW% GTR %HH% (
+   :: If the width is larger than the height, use the width as a basis.
+   set /a WMWW=%WMWIDTH%*%WW%/100
+)
+
+IF %HH% GTR %WW% (
+   :: If the height is larger than the width, use the height as a basis.
+   set /a WMWW=%WMWIDTH%*%HH%/100
+)
+
+IF %WW% == %HH% (
+   :: If width and height are equal, use the width as a basis.
+   set /a WMWW=%WMWIDTH%*%WW%/100
+)
+
+:: Compute the offset from the bottom right. Note that for computing the offset,
+:: always the width of the original image is used (and not the larger one of the
+:: original image edges).
+set /a WMOFF=%WMOFFSET%*%WW%/100
 
 :: Print some information.
 echo "Input Image:  %SRC%"
